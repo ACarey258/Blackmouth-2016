@@ -10,11 +10,11 @@ library(base)
 library(plyr)
 
 #set paths, make a list of text for the files to be used
-paths = list("C:\\Users\\careyajc\\PSEMP\\PSEMP\\R\\2016 Blackmouth\\PS16BlackmouthMuscle_POPsA.xlsx",
-             "C:\\Users\\careyajc\\PSEMP\\PSEMP\\R\\2016 Blackmouth\\PS16BlackmouthMuscle_POPsB.xlsx",
-             "C:\\Users\\careyajc\\PSEMP\\PSEMP\\R\\2016 Blackmouth\\PS16BlackmouthMuscle_StableIsotopes.xlsx",
-             "C:\\Users\\careyajc\\PSEMP\\PSEMP\\R\\2016 Blackmouth\\2016Blackmouth_UWStableIsotopes.xlsx",
-             "C:\\Users\\careyajc\\PSEMP\\PSEMP\\R\\2016 Blackmouth\\Outputs\\")
+paths = list("C:\\data\\GitHub\\Blackmouth-2016\\PS16BlackmouthMuscle_POPsA.xlsx",
+             "C:\\data\\GitHub\\Blackmouth-2016\\PS16BlackmouthMuscle_POPsB.xlsx",
+             "C:\\data\\GitHub\\Blackmouth-2016\\PS16BlackmouthMuscle_StableIsotopes.xlsx",
+             "C:\\data\\GitHub\\Blackmouth-2016\\2016Blackmouth_UWStableIsotopes.xlsx",
+             "C:\\data\\GitHub\\Blackmouth-2016\\Outputs\\")
 
 # set outfile
 outfile = paths[[5]]
