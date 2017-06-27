@@ -4,8 +4,8 @@ library(readxl)
 library(ggplot2)
 
 #set paths, make a list of text for the files to be used
-paths = list("C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
-             "C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\Outputs\\")
+paths = list("C:\\data\\GitHub\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
+             "C:\\data\\GitHub\\Blackmouth-2016\\Outputs\\")
 
 # set outfile
 outfile = paths[[2]]
@@ -36,6 +36,9 @@ BMmuscle$MA <- factor(BMmuscle$MA, levels = c('MA6', 'MA7', 'MA8.1', 'MA8.2', 'M
 a <- ggplot(BMmuscle, aes(x = ScaleAge, y = ForkLength)) + geom_point()
 print(a) #simple scatterplot, removed NAs (13)
 print({a + aes(colour = MA)}) #color codes fish based on marine area where they were collected, removed NAs (13) 
+
+# Save the plot to outfile
+ggsave(paste(outfile,"scaleplot.jpg",sep=""),a,height=5,width=7.5)
 
 ## need to export graphic...
 
