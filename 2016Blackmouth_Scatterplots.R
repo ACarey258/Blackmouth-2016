@@ -6,6 +6,10 @@ library(ggplot2)
 #set paths, make a list of text for the files to be used
 paths = list("C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
              "C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\Outputs\\")
+# paths = list("C:\\data\\GitHub\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
+#              "C:\\data\\GitHub\\Blackmouth-2016\\Outputs\\")
+
+
 
 # set outfile
 outfile = paths[[2]]
@@ -85,13 +89,17 @@ BMpops.long <- reshape(BMpops,varying = c("ForkLength", "ScaleAge", "SWAge", "Fw
 # scatterplot of length vs. TPCBs colored by Marine Area
 PCBslen <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs)) + geom_point()
 PCBslen <- PCBslen + aes(colour = MA)
-print(PCBslen)
+PCBslen
 
-PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
-    geom_point() +
-    scale_colour_hue(1=50) +
-    geom_smooth(method = lm,
-                se = FALSE)
-print(PCBslreg)
+# above plot with linear trendlines added
+PCBslreg <- PCBslen +geom_smooth(method = lm, se = FALSE)
+PCBslreg
+
+# PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
+#     geom_point() +
+#     scale_colour_hue(1=50) +
+#     geom_smooth(method = lm,
+#                 se = FALSE)
+# print(PCBslreg)
 
 
