@@ -81,3 +81,17 @@ BMpops.long <- reshape(BMpops,varying = c("ForkLength", "ScaleAge", "SWAge", "Fw
                                   "HCB", "SumHCHs", "SumCHLDs", "dieldrin", "SumDDTs", "TPCBs", "SumBDE", "NOAA_CNratio", 
                                   "NOAA_delta13C_LipExt", "NOAA_delta15N_LipExt", "UW_DeltaN_NotExt","UW_DeltaC_NotExt"), 
                         v.names = "Variables", idvar = c("FishID", "MA"), direction = "long")
+
+# scatterplot of length vs. TPCBs colored by Marine Area
+PCBslen <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs)) + geom_point()
+PCBslen <- PCBslen + aes(colour = MA)
+print(PCBslen)
+
+PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
+    geom_point() +
+    scale_colour_hue(1=50) +
+    geom_smooth(method = lm,
+                se = FALSE)
+print(PCBslreg)
+
+
