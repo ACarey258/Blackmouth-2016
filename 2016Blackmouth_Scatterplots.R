@@ -89,9 +89,9 @@ print(PCBslen)
 
 PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
     geom_point() +
-    scale_colour_hue(1=50) +
-    geom_smooth(method = lm,
+    geom_smooth(method = "lm",
                 se = FALSE)
 print(PCBslreg)
+ggsave(paste(outfile,"16BM_LengthTPCBs.jpg",sep=""),PCBslreg,height=5,width=7.5)
 
 
