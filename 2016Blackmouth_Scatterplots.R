@@ -1,5 +1,7 @@
+#clear workspace
 rm(list=ls(all=TRUE))
 
+#load packages
 library(readxl)
 library(ggplot2)
 
@@ -45,7 +47,7 @@ ggsave(paste(outfile,"16BM_ScaleAge and Length.jpg",sep=""),a,height=5,width=7.5
 # 2. Scatterplot of individual lengths (y) and saltwater ages (x)
 b <- ggplot(BMmuscle, aes(x = SWAge, y = ForkLength)) + geom_point()
 b <- b + aes(colour = MA) 
-
+print(b)
 ggsave(paste(outfile,"16BM_SWage and Length.jpg",sep=""),b,height=5,width=7.5)
 
 ###
@@ -82,16 +84,44 @@ BMpops.long <- reshape(BMpops,varying = c("ForkLength", "ScaleAge", "SWAge", "Fw
                                   "NOAA_delta13C_LipExt", "NOAA_delta15N_LipExt", "UW_DeltaN_NotExt","UW_DeltaC_NotExt"), 
                         v.names = "Variables", idvar = c("FishID", "MA"), direction = "long")
 
-# scatterplot of length vs. TPCBs colored by Marine Area
+# scatterplot of length vs. TPCBs colored by Marine Area, all fish
 PCBslen <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs)) + geom_point()
 PCBslen <- PCBslen + aes(colour = MA)
 print(PCBslen)
 
 PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
     geom_point() +
-    geom_smooth(method = "lm",
-                se = FALSE)
+    geom_smooth(method = "lm", #adds regression lines to each Marine Area 
+                se = FALSE) #removes shaded standard error? area around regression lines
 print(PCBslreg)
 ggsave(paste(outfile,"16BM_LengthTPCBs.jpg",sep=""),PCBslreg,height=5,width=7.5)
+
+## only plot legal sized fish > 56cm Total Length, 52.5 cm FL = 22 inch fish, Graphed fish that were greater than ~51.5cm Fork Length
+BMlegal <- subset(BMpops, ForkLength>="51.5") #excludes 2 fish from MA12, 1 from MA7 and 6 from MA10
+PCBsleg <- ggplot(BMlegal, aes(x = ForkLength, y = TPCBs, color = MA)) + 
+    geom_point() +
+    geom_smooth(method = "lm",
+                se = FALSE)
+print(PCBsleg)
+ggsave(paste(outfile,"16BM_LengthTPCBs_LegalSize.jpg",sep=""),PCBsleg,height=5,width=7.5)
+
+## messing around with ggplot...
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") #palette of 8 colorblind-friendly colors
+#excludes 2 fish from MA12, 1 from MA7 and 6 from MA10
+PCBsleg2 <- ggplot(BMlegal, aes(x = ForkLength, y = TPCBs, color = MA)) + 
+    geom_point(size = 3) +
+    scale_colour_manual(values = cbPalette) + #colorblind-friendly colors
+    geom_smooth(method = "lm",
+                se = FALSE) + #adds regression lines, need to add r^2 for each line
+    theme_classic() + #black and white with no gridlines
+    xlab("Fork Length (cm)") + #x-axis label
+    ylab("TPCBs (ng/g ww) in muscle tissue") + #y-axis label
+    scale_y_continuous(breaks = seq(0,175,25)) + #set y-axis scale, start=0, end=175, tick every 25
+    scale_x_continuous(breaks = seq(50,85,5)) #set x-axis scale, start=50, end=85, tick every 5
+print(PCBsleg2)
+
+ggsave(paste(outfile,"16BM_LengthTPCBs_LegalSize_Ver2.jpg",sep=""),PCBsleg2,height=5,width=7.5)
+# r squared with regression lines - figure out
+#NOPE, rename Blegal
 
 
