@@ -8,6 +8,10 @@ library(ggplot2)
 #set paths, make a list of text for the files to be used
 paths = list("C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
              "C:\\Users\\careyajc\\PSEMP\\PSEMP\\GitHub\\Blackmouth-2016\\Blackmouth-2016\\Outputs\\")
+# paths = list("C:\\data\\GitHub\\Blackmouth-2016\\2016Blackmouth_DataForR_6.27.17.xlsx",
+#              "C:\\data\\GitHub\\Blackmouth-2016\\Outputs\\")
+
+
 
 # set outfile
 outfile = paths[[2]]
@@ -16,7 +20,7 @@ outfile = paths[[2]]
 BM <- read_excel(paths[[1]],"BlackmouthPOPsSIs")
 
 #create dataframe of data only needed for scatterplots, subset out the Matrix = muscle
-BMdat <- as.data.frame(BM[ ,c(2:4,6:8)])
+BMdat <- as.data.frame(BM[ ,c(2:4,6:27)])
 BMmuscle <- subset(BMdat, Matrix=="muscle")
 BMmuscle$ForkLength <- as.numeric(BMmuscle$ForkLength)
 
@@ -49,6 +53,21 @@ b <- ggplot(BMmuscle, aes(x = SWAge, y = ForkLength)) + geom_point()
 b <- b + aes(colour = MA) 
 print(b)
 ggsave(paste(outfile,"16BM_SWage and Length.jpg",sep=""),b,height=5,width=7.5)
+
+# 3. Scatterplot of individual lengths (x) and whole fish weights (y), gutted fish weights not included in data file 
+lw <- ggplot(BMmuscle, aes(x = ForkLength, y = WholeFishWt, color = SWAge)) + 
+    geom_point() +
+    geom_smooth(method = "lm",
+                se = FALSE) + #adds regression lines, need to add r^2 for each line
+    theme_classic()
+
+print(lw)
+ggsave(paste(outfile,"16BM_LengthWeightRegression.jpg",sep=""),lw,height=5,width=7.5)
+
+## START HERE
+##BMmuscle$WholeFishWtCat <- categorize(BMmuscle$WholeFishWt, breaks = 4, quantile = FALSE,
+                                      #labels = c("one", "two", "three", "four"))
+##levels(BMmuscle$WholeFishWtCat)
 
 ###
 # Setting all data up for plotting
@@ -87,6 +106,7 @@ BMpops.long <- reshape(BMpops,varying = c("ForkLength", "ScaleAge", "SWAge", "Fw
 # scatterplot of length vs. TPCBs colored by Marine Area, all fish
 PCBslen <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs)) + geom_point()
 PCBslen <- PCBslen + aes(colour = MA)
+
 print(PCBslen)
 
 PCBslreg <- ggplot(BMpops, aes(x = ForkLength, y = TPCBs, color = MA)) + 
@@ -121,7 +141,32 @@ PCBsleg2 <- ggplot(BMlegal, aes(x = ForkLength, y = TPCBs, color = MA)) +
 print(PCBsleg2)
 
 ggsave(paste(outfile,"16BM_LengthTPCBs_LegalSize_Ver2.jpg",sep=""),PCBsleg2,height=5,width=7.5)
-# r squared with regression lines - figure out
-#NOPE, rename Blegal
 
+## PBDEs vs length
 
+PBDEsleg <- ggplot(BMlegal, aes(x = ForkLength, y = SumBDE, color = MA)) + 
+    geom_point(size = 3) +
+    scale_colour_manual(values = cbPalette) + #colorblind-friendly colors
+    geom_smooth(method = "lm",
+                se = FALSE) + #adds regression lines, need to add r^2 for each line
+    theme_classic() + #black and white with no gridlines
+    xlab("Fork Length (cm)") + #x-axis label
+    ylab("SumBDEs (ng/g ww) in muscle tissue") + #y-axis label
+    scale_y_continuous(breaks = seq(0,35,5)) + #set y-axis scale, start=0, end=35, tick every 25
+    scale_x_continuous(breaks = seq(50,85,5)) #set x-axis scale, start=50, end=85, tick every 5
+print(PBDEsleg)
+ggsave(paste(outfile,"16BM_LengthPBDEs_LegalSize_Ver2.jpg",sep=""),PBDEsleg,height=5,width=7.5)
+
+## !! TO DO - add an r-squared value for each regression line/Marine Area
+
+## Comparison of contaminants and various biometrics (ForkLength, ScaleAge, SWage, FWage, OutmigrationLH, Lipids)
+# loop
+varlist <- unique(BMpops.long$time) #19 variables
+
+i=1
+for(i in 1:length(varlist)) {
+    var <- varlist[i]
+    
+    vardat <- BMpops.long[BMpops.long$time == var, ]
+    
+    }
