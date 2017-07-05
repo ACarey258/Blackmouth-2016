@@ -55,14 +55,35 @@ print(b)
 ggsave(paste(outfile,"16BM_SWage and Length.jpg",sep=""),b,height=5,width=7.5)
 
 # 3. Scatterplot of individual lengths (x) and whole fish weights (y), gutted fish weights not included in data file 
-lw <- ggplot(BMmuscle, aes(x = ForkLength, y = WholeFishWt, color = SWAge)) + 
-    geom_point() +
+BMmuscle$SWageCat[BMmuscle$SWAge == 0] <- "Zero"
+BMmuscle$SWageCat[BMmuscle$SWAge == 1] <- "One"
+BMmuscle$SWageCat[BMmuscle$SWAge == 2] <- "Two"
+BMmuscle$SWageCat[BMmuscle$SWAge == 3] <- "Three"
+BMmuscle$SWageCat[BMmuscle$SWAge == 4] <- "Four"
+BMmuscle$SWageCat <-factor(BMmuscle$SWageCat) #assign SWAge column as a factor/categorical variable
+levels(BMmuscle$SWageCat) #examine levels of SWageCat = alphabetical, need to be from lowest to highest
+BMmuscle$SWageCat <- factor(BMmuscle$SWageCat, levels = c('Zero', 'One', 'Two', 'Three', 'Four'))
+
+lw_eqn <- function(BMmuscle){
+    m <- lm(WholeFishWt ~ ForkLength, BMmuscle);
+    eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+                     list(a = format(coef(m)[1], digits = 2), 
+                          b = format(coef(m)[2], digits = 2), 
+                          r2 = format(summary(m)$r.squared, digits = 3)))
+    as.character(as.expression(eq));                 
+} #function to add regression equation and r squared to a scatterplot
+
+lw <- ggplot(BMmuscle, aes(x = ForkLength, y = WholeFishWt)) + 
+    geom_point(aes(color = SWageCat), shape = 1, size = 3) + #allows for only one regression line for all points instead of by category
     geom_smooth(method = "lm",
-                se = FALSE) + #adds regression lines, need to add r^2 for each line
-    theme_classic()
+                se = FALSE,
+                color = "black") + #add regression line, need to add r^2 for each line
+    theme_classic() +
+    geom_text(x = 45, y = 10, label = lw_eqn(BMmuscle), parse = TRUE) + #adds regression equation and r^2 value
+    labs(x = "Fork Length (cm)", y = "Whole Body Fish Weight (lbs)", color = "SW Age")
 
 print(lw)
-ggsave(paste(outfile,"16BM_LengthWeightRegression.jpg",sep=""),lw,height=5,width=7.5)
+ggsave(paste(outfile,"16BM_LengthWtRegression.jpg",sep=""),lw,height = 5,width = 7.5)
 
 ## START HERE
 ##BMmuscle$WholeFishWtCat <- categorize(BMmuscle$WholeFishWt, breaks = 4, quantile = FALSE,
